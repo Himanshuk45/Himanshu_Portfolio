@@ -7,3 +7,6 @@ This portfolio contains my data science projects
 - Used seaborn to inspect the heatmap of the correlation matrix of the different variables. <br />
 - Used three different algorithms to build the anomaly detection model: Isolation Forest, Local Outlier Factor & One Class Support Vector Machine. <br />
 - Analyzed the result from all the three algorithms and concluded that Isolation Forest has an overall better accuracy score than the other two algorithms.
+
+The following histogram shows that the dataset is highly imbalanced with very few numbers of fraudalent cases as compared to normal cases:
+(https://github.com/Himanshuk45/Himanshu_Portfolio/blob/main/Images/index.png)
