@@ -1,4 +1,4 @@
-# Himanshu_Projetcs
+# Himanshu_Portfolio
 This portfolio contains my data science projects
 
 # Project 1: Credit Cad Fraud Detection: Project OverView
