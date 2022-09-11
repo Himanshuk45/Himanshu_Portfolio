@@ -13,3 +13,6 @@ This portfolio contains my data science projects
 <br />
 **Even the amount of money that's involved fraudalent cases is much smalle than normal transactions:**
 ![](https://github.com/Himanshuk45/Himanshu_Portfolio/blob/main/Images/index1.png)
+<br />
+**The following heatmap of the correlation matrix shows that the various variables aren't strongly correlated:**
+![](https://github.com/Himanshuk45/Himanshu_Portfolio/blob/main/Images/index4.png)
