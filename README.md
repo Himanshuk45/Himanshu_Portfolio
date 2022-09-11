@@ -9,14 +9,14 @@ This portfolio contains my data science projects
 - Analyzed the result from all the three algorithms and concluded that Isolation Forest has an overall better accuracy score than the other two algorithms.
 
 **The following histogram shows that the dataset is highly imbalanced with very few numbers of fraudalent cases as compared to normal cases:** <br />
-![](https://github.com/Himanshuk45/Himanshu_Portfolio/blob/main/Images/index.PNG)
+![](https://github.com/Himanshuk45/Himanshu_Portfolio/blob/main/Images/index.png)
 
 <br />
 **Even the amount of money that's involved fraudalent cases is much smalle than normal transactions:**
-![](https://github.com/Himanshuk45/Himanshu_Portfolio/blob/main/Images/index1.PNG)
+![](https://github.com/Himanshuk45/Himanshu_Portfolio/blob/main/Images/index1.png)
 <br />
 **The following heatmap of the correlation matrix shows that the various variables aren't strongly correlated:**
-![](https://github.com/Himanshuk45/Himanshu_Portfolio/blob/main/Images/index4.PNG)
+![](https://github.com/Himanshuk45/Himanshu_Portfolio/blob/main/Images/index4.png)
 <br /><br />
 Finally, here's the conclusion about the different algorithms that I used to build a model:
 - Isolation Forest detected 86 errors, Local Outlier Factor (LOF) detected 98 errors while SVM detected 8533 errors.
