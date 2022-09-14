@@ -13,10 +13,10 @@ This portfolio contains my data science projects
 
 <br />
 **Even the amount of money that's involved fraudalent cases is much smalle than normal transactions:**
-![](https://github.com/Himanshuk45/Himanshu_Portfolio/blob/main/Images/index1.png)
+<img src="https://github.com/Himanshuk45/Himanshu_Portfolio/blob/main/Images/index1.png" class="img-responsive" alt=""> </div>
 <br />
 **The following heatmap of the correlation matrix shows that the various variables aren't strongly correlated:**
-![](https://github.com/Himanshuk45/Himanshu_Portfolio/blob/main/Images/index4.png)
+<img src="https://github.com/Himanshuk45/Himanshu_Portfolio/blob/main/Images/index4.png" class="img-responsive" alt=""> </div>
 <br /><br />
 Finally, here's the conclusion about the different algorithms that I used to build a model:
 - Isolation Forest detected 86 errors, Local Outlier Factor (LOF) detected 98 errors while SVM detected 8533 errors.
