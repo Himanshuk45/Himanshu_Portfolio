@@ -19,6 +19,6 @@ This portfolio contains my data science projects
 <img src="https://github.com/Himanshuk45/Himanshu_Portfolio/blob/main/Images/index4.png" class="img-responsive" alt=""> </div>
 <br /><br />
 Finally, here's the conclusion about the different algorithms that I used to build a model:<br />
-- Isolation Forest detected 73 errors, Local Outlier Factor (LOF) detected 97 errors while SVM detected 8516 errors.
-- Isolation Forest has an accuracy score of 99.74% as compared to the 99.65% accuracy score of LOF and 70.09% score of SVM.
-- When comparing error precision & recall for 3 models , the Isolation Forest performed much better than the LOF and SVM models.
+-  Isolation Forest detected 73 errors, Local Outlier Factor (LOF) detected 97 errors while SVM detected 8516 errors.
+-  Isolation Forest has an accuracy score of 99.74% as compared to the 99.65% accuracy score of LOF and 70.09% score of SVM.
+-  When comparing error precision & recall for 3 models , the Isolation Forest performed much better than the LOF and SVM models.
