@@ -1,0 +1,213 @@
+Loading the cleaned housing data and also the required packages:
+
+```{r}
+housing <- read.csv("C:\\Users\\dell\\Downloads\\house_2.csv", header=TRUE, stringsAsFactors=FALSE)
+library(ggcorrplot)
+library(Hmisc)
+library(car)
+library(caret)
+library(glmnet)
+library(leaps)
+library(xgboost)
+```
+Viewing the data and the dattype of each column
+```{r}
+str(housing)
+View(housing)
+dim(housing)
+```
+```{r}
+hist.data.frame(housing)
+```
+```{r}
+housing$tradeTime <- NULL
+housing$price <- NULL
+```
+
+
+```{r}
+ggcorrplot(cor(housing), lab=F)
+```
+```{r}
+housing$square <- NULL
+
+```
+```{r}
+linear.regression.model <- lm(totalPrice~.,data = housing)
+```
+```{r}
+vif(linear.regression.model)
+vif_values <- vif(linear.regression.model)
+barplot(vif_values, main = "VIF Values", col = "steelblue",names.arg = c("Lng","Lat","DOM","followers","livingRoom","drawingRoom","kitchen","bathRoom","buildingType","constructionTime","renovationCondition","buildingStructure","ladderRatio","elevator","fiveYearsProperty","subway","district","communityAverage","floorType","floorNumber"))
+```
+
+```{r}
+index = sample(1:nrow(housing), 0.7*nrow(housing)) 
+
+
+train = housing[index,] # Create the training data 
+
+test = housing[-index,] # Create the test data
+
+
+dim(train)
+
+dim(test)
+```
+```{r}
+housing$floorType <- as.factor(housing$floorType)
+cols = c("Lng","Lat","DOM","followers","livingRoom","drawingRoom","kitchen","bathRoom","buildingType","constructionTime","renovationCondition","buildingStructure","ladderRatio","elevator","fiveYearsProperty","subway","district","communityAverage","floorType","floorNumber")
+
+pre_proc_val <- preProcess(train[,cols], method = c("center", "scale"))
+
+train[,cols] = predict(pre_proc_val, train[,cols])
+
+test[,cols] = predict(pre_proc_val, test[,cols])
+
+
+summary(train)
+```
+```{r}
+linear.model <- lm(totalPrice~.,data = train)
+summary(linear.model)
+```
+Based on the p-values and significance level = 0.05, lng and ladder ratio are not statistically not significant.
+
+```{r}
+summary(linear.model)$r.squared
+predictions = matrix(predict(linear.model,train))
+MSE = mean((predictions-train$totalPrice)^2)
+MSE
+```
+```{r}
+predictions = matrix(predict(linear.model,test))
+MSE = mean((predictions-test$totalPrice)^2)
+MSE
+```
+```{r}
+step(linear.model, direction="both", k = 2)
+```
+Based on AIC: Lng and ladder ratio are not significant.
+
+```{r}
+RSSleaps = regsubsets(x = as.matrix(train[, -5]), y = train[, 5], nvmax = 21)
+sumleaps = summary(RSSleaps, matrix = T)
+sumleaps$which
+sumleaps$cp
+```
+Based on mallows cp: lng and ladder ratio are statistically not significant.
+
+```{r}
+#Building a linear regression model without ladder ratio and lng
+
+linear.model.new <- lm(formula = totalPrice ~ Lat + DOM + followers + livingRoom + 
+    drawingRoom + kitchen + bathRoom + buildingType + constructionTime + 
+    renovationCondition + buildingStructure + elevator + fiveYearsProperty + 
+    subway + district + communityAverage + floorType + floorNumber, 
+    data = train)
+
+predictions = matrix(predict(linear.model.new,train))
+MSE = mean((predictions-train$totalPrice)^2, na.rm = T)
+MSE
+```
+```{r}
+predictions = matrix(predict(linear.model.new,test))
+MSE = mean((predictions-test$totalPrice)^2, na.rm = T)
+MSE
+```
+This new model gives about the same mse.
+
+
+Building the rig regression model:
+```{r}
+x_train = as.matrix(train[,-5])
+
+y_train = train$totalPrice
+
+
+x_test = as.matrix(test[,-5])
+
+y_test = test$totalPrice
+
+
+lambdas <- seq(0.001, 0.009, by = 0.0001)
+```
+
+```{r}
+cv_ridge <- cv.glmnet(x_train, y_train, alpha = 0, nfolds = 10,lambda = lambdas)
+
+optimal_lambda <- cv_ridge$lambda.min
+
+optimal_lambda
+```
+
+```{r}
+# Prediction and evaluation on train data
+
+predictions_train <- predict(cv_ridge, s = optimal_lambda, newx = x_train)
+
+mse_train = mean((y_train-predictions_train)^2)
+mse_train
+
+
+
+# Prediction and evaluation on test data
+
+predictions_test <- predict(cv_ridge, s = optimal_lambda, newx = x_test)
+mse_test = mean((y_test-predictions_test)^2)
+mse_test
+```
+Ridge regression gives about the same error.
+
+Building the lasso regression model:
+```{r}
+cv_lasso <- cv.glmnet(x_train, y_train, alpha = 1, nfolds = 10,lambda = lambdas)
+optimal_lambda <- cv_lasso$lambda.min
+
+optimal_lambda
+```
+```{r}
+# Prediction and evaluation on train data
+
+predictions_train <- predict(cv_lasso, s = optimal_lambda, newx = x_train)
+
+mse_train = mean((y_train-predictions_train)^2)
+mse_train
+
+
+
+# Prediction and evaluation on test data
+
+predictions_test <- predict(cv_lasso, s = optimal_lambda, newx = x_test)
+mse_test = mean((y_test-predictions_test)^2)
+mse_test
+```
+The error with lasso regression is also the same.
+
+
+Creating the Xgb model:
+```{r}
+xgb_train = xgb.DMatrix(data = x_train, label = y_train)
+xgb_test = xgb.DMatrix(data = x_test, label = y_test)
+
+watchlist = list(train=xgb_train, test=xgb_test)
+model = xgb.train(data = xgb_train, max.depth = 3, watchlist=watchlist, nrounds = 100)
+```
+100th round is the best round.
+
+```{r}
+model_xgboost = xgboost(data = xgb_train, max.depth = 3, nrounds = 100, verbose = 0)
+
+summary(model_xgboost)
+```
+```{r}
+pred_y = predict(model_xgboost, xgb_test)
+mean((y_test - pred_y)^2)
+```
+```{r}
+knnmodel = knnreg(train[,-5], train$totalPrice)
+pred_y = predict(knnmodel, test[,-5])
+error = mean((pred_y - test$totalPrice)^2)
+error
+```
+          
